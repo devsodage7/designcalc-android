@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DesignCalc — Machine Design Toolkit</title>
+<meta name="description" content="Free engineering calculators: cutting parameters, bearing life, key and shaft stress, tolerance stack-up. No install, works offline.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%99%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <h1>DesignCalc</h1>
+    <p class="tagline">Machine design &amp; workshop calculators — cutting parameters, bearing life, key/shaft stress, tolerance stack-up.</p>
+  </div>
+</header>
+
+<nav class="tabs wrap" role="tablist">
+  <button class="tab is-active" data-tab="cutting" role="tab">Cutting</button>
+  <button class="tab" data-tab="bearing" role="tab">Bearing life</button>
+  <button class="tab" data-tab="key" role="tab">Key &amp; shaft</button>
+  <button class="tab" data-tab="stackup" role="tab">Stack-up</button>
+</nav>
+
+<main class="wrap">
+
+  <!-- ------------------------------------------------------------- cutting -->
+  <section id="tab-cutting" class="panel is-active">
+    <div class="card">
+      <h2>Cutting parameters</h2>
+      <p class="hint">Spindle speed, feed rate, material removal rate, machining time and cutting power.</p>
+
+      <div class="field">
+        <label for="op">Operation</label>
+        <select id="op">
+          <option value="turning">Turning</option>
+          <option value="drilling">Drilling</option>
+          <option value="milling">Milling</option>
+        </select>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="c-vc">Cutting speed Vc (m/min)</label>
+          <input id="c-vc" type="number" step="any" value="200" min="0">
+        </div>
+        <div class="field">
+          <label for="c-d" data-label-diameter>Diameter D (mm)</label>
+          <input id="c-d" type="number" step="any" value="50" min="0">
+        </div>
+        <div class="field" data-op="turning drilling">
+          <label for="c-f" data-label-feed>Feed f (mm/rev)</label>
+          <input id="c-f" type="number" step="any" value="0.2" min="0">
+        </div>
+        <div class="field" data-op="turning">
+          <label for="c-ap">Depth of cut ap (mm)</label>
+          <input id="c-ap" type="number" step="any" value="2" min="0">
+        </div>
+        <div class="field" data-op="turning milling">
+          <label for="c-length">Cut length L (mm)</label>
+          <input id="c-length" type="number" step="any" value="100" min="0">
+        </div>
+        <div class="field" data-op="turning">
+          <label for="c-kc">Specific cutting force kc (N/mm²)</label>
+          <input id="c-kc" type="number" step="any" value="2000" min="0">
+        </div>
+        <div class="field" data-op="drilling">
+          <label for="c-holedepth">Hole depth L (mm)</label>
+          <input id="c-holedepth" type="number" step="any" value="30" min="0">
+        </div>
+        <div class="field" data-op="milling">
+          <label for="c-fz">Feed per tooth fz (mm)</label>
+          <input id="c-fz" type="number" step="any" value="0.05" min="0">
+        </div>
+        <div class="field" data-op="milling">
+          <label for="c-z">Number of teeth z</label>
+          <input id="c-z" type="number" step="1" value="4" min="1">
+        </div>
+        <div class="field" data-op="milling">
+          <label for="c-apm">Axial depth ap (mm)</label>
+          <input id="c-apm" type="number" step="any" value="2" min="0">
+        </div>
+        <div class="field" data-op="milling">
+          <label for="c-ae">Radial depth ae (mm)</label>
+          <input id="c-ae" type="number" step="any" value="10" min="0">
+        </div>
+      </div>
+
+      <button class="btn" id="cutting-go">Calculate</button>
+      <div class="error" id="cutting-error" hidden></div>
+      <div class="results" id="cutting-results"></div>
+      <p class="note">Power = Fc · Vc / 60. Assumes a sharp tool and full depth of cut.</p>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- bearing -->
+  <section id="tab-bearing" class="panel">
+    <div class="card">
+      <h2>Bearing life (ISO 281 basic rating life)</h2>
+      <p class="hint">L10 is the life reached by 90% of an identical bearing group.</p>
+
+      <div class="grid">
+        <div class="field">
+          <label for="b-c">Dynamic load rating C (N)</label>
+          <input id="b-c" type="number" step="any" value="30000" min="0">
+        </div>
+        <div class="field">
+          <label for="b-p">Equivalent load P (N)</label>
+          <input id="b-p" type="number" step="any" value="5000" min="0">
+        </div>
+        <div class="field">
+          <label for="b-n">Speed n (rpm)</label>
+          <input id="b-n" type="number" step="any" value="1500" min="0">
+        </div>
+        <div class="field">
+          <label for="b-type">Bearing type</label>
+          <select id="b-type">
+            <option value="ball">Ball (p = 3)</option>
+            <option value="roller">Roller (p = 10/3)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="b-rel">Reliability</label>
+          <select id="b-rel">
+            <option value="90">90% (L10)</option>
+            <option value="95">95% (L5)</option>
+            <option value="96">96% (L4)</option>
+            <option value="97">97% (L3)</option>
+            <option value="98">98% (L2)</option>
+            <option value="99">99% (L1)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn" id="bearing-go">Calculate</button>
+      <div class="error" id="bearing-error" hidden></div>
+      <div class="results" id="bearing-results"></div>
+      <p class="note">Lnm = a1 · L10, a1 from ISO 281. Life assumes clean lubrication and correct mounting.</p>
+    </div>
+  </section>
+
+  <!-- ----------------------------------------------------------------- key -->
+  <section id="tab-key" class="panel">
+    <div class="card">
+      <h2>Key &amp; shaft stress</h2>
+      <p class="hint">Shaft torsion, key shear and key bearing (crushing) stress for a parallel key.</p>
+
+      <div class="grid">
+        <div class="field">
+          <label for="k-t">Torque T (N·m)</label>
+          <input id="k-t" type="number" step="any" value="100" min="0">
+        </div>
+        <div class="field">
+          <label for="k-d">Shaft diameter d (mm)</label>
+          <input id="k-d" type="number" step="any" value="30" min="0">
+        </div>
+        <div class="field">
+          <label for="k-w">Key width w (mm)</label>
+          <input id="k-w" type="number" step="any" value="8" min="0">
+        </div>
+        <div class="field">
+          <label for="k-h">Key height h (mm)</label>
+          <input id="k-h" type="number" step="any" value="7" min="0">
+        </div>
+        <div class="field">
+          <label for="k-l">Key length L (mm)</label>
+          <input id="k-l" type="number" step="any" value="28" min="0">
+        </div>
+        <div class="field">
+          <label for="k-shear">Allowable shear (MPa)</label>
+          <input id="k-shear" type="number" step="any" value="40" min="0">
+        </div>
+        <div class="field">
+          <label for="k-bear">Allowable bearing (MPa)</label>
+          <input id="k-bear" type="number" step="any" value="80" min="0">
+        </div>
+      </div>
+
+      <button class="btn" id="key-go">Calculate</button>
+      <div class="error" id="key-error" hidden></div>
+      <div class="results" id="key-results"></div>
+
+      <details class="details">
+        <summary>Need torque from power?</summary>
+        <div class="grid">
+          <div class="field">
+            <label for="k-kw">Power (kW)</label>
+            <input id="k-kw" type="number" step="any" value="5" min="0">
+          </div>
+          <div class="field">
+            <label for="k-rpm">Speed (rpm)</label>
+            <input id="k-rpm" type="number" step="any" value="1440" min="0">
+          </div>
+        </div>
+        <button class="btn btn-ghost" id="k-from-power">Get torque</button>
+        <div class="results small" id="k-power-results"></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ------------------------------------------------------------- stackup -->
+  <section id="tab-stackup" class="panel">
+    <div class="card">
+      <h2>Tolerance stack-up</h2>
+      <p class="hint">Add dimensions of an assembly chain. Compares worst-case and statistical (RSS) results.</p>
+
+      <div class="stack-head">
+        <span>Name</span><span>Nominal (mm)</span><span>± tol (mm)</span><span></span>
+      </div>
+      <div id="stack-rows"></div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" id="stack-add">+ Add dimension</button>
+        <button class="btn" id="stack-go">Calculate</button>
+      </div>
+
+      <div class="error" id="stack-error" hidden></div>
+      <div class="results" id="stack-results"></div>
+      <p class="note">RSS assumes independent, normally distributed errors. Use it for process capability, not for guaranteed limits.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer wrap">
+  <p>Built by <a href="https://github.com/devsodage7">Devraj Arun Sodage</a> · <a href="https://github.com/devsodage7/designcalc">source on GitHub</a></p>
+  <p class="fine">Formulas follow standard machine design practice (ISO 281 for bearings). Always check against your own design code before production use.</p>
+</footer>
+
+<script src="assets/calc.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
